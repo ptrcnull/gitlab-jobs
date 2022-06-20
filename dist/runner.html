@@ -127,7 +127,7 @@
 								retryJob(job.project.id.toString(), job.id)
 							} catch (err) {
 								console.error(err)
-								alert(err)
+								alert(err.toString())
 							}
 						})
 
@@ -143,7 +143,7 @@
 					})
 				} catch (err) {
 					console.error(err)
-					alert(err)
+					alert(err.toString())
 				}
 			}
 

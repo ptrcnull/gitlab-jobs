@@ -48,7 +48,10 @@
 						table.appendChild(fragment)
 					})
 				})
-				.catch(err => alert(err))
+				.catch(err => {
+					console.error(err)
+					alert(err.toString())
+				})
 		</script>
 	</body>
 </html>
