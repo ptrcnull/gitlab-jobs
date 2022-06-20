@@ -115,7 +115,7 @@
 								link: 'https://gitlab.com/' + job.project.path_with_namespace,
 								text: job.project.name
 							},
-							runner: job.runner.description
+							runner: job.runner?.description || ''
 						})
 
 						const row = $(fragment, 'tr')
