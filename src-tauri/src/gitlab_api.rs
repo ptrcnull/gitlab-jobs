@@ -25,7 +25,7 @@ impl Endpoint for Runners {
     }
 
     fn endpoint(&self) -> std::borrow::Cow<'static, str> {
-        format!("runners").into()
+        "runners".into()
     }
 }
 

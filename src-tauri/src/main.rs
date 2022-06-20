@@ -5,7 +5,7 @@
 
 use std::sync::Mutex;
 
-use gitlab::{api::{Query, AsyncQuery, projects::jobs::RetryJob}, Runner, Gitlab, AsyncGitlab};
+use gitlab::{api::{AsyncQuery, projects::jobs::RetryJob}, Runner, AsyncGitlab};
 use gitlab_api::Job;
 
 pub mod gitlab_api;
