@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css">
+		<style>
+			table {
+				height: 100vh;
+				width: 100vw;
+			}
+			td.status {
+				font-weight: bold;
+			}
+			tr.failed td.status {
+				color: #ff0055;
+			}
+			tr.success td.status {
+				color: #009e73;
+			}
+			tr.running td.status {
+				color: #56b4e9;
+			}
+			td.retry {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<table>
+			<thead>
+				<tr>
+					<th>Pipeline</th>
+					<th>Job name</th>
+					<th>Created at</th>
+					<th class="status">Status</th>
+					<th>Project</th>
+					<th>Runner</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+
+		<template>
+			<tr>
+				<td class="pipeline"><a target="_blank"></a></td>
+				<td class="name"><a target="_blank"></a></td>
+				<td class="created_at"></td>
+				<td class="status"></td>
+				<td class="project"><a target="_blank"></a></td>
+				<td class="runner"></td>
+				<td class="retry">retry</td>
+			</tr>
+		</template>
+
+		<script src="common.js"></script>
+		<script>
+			const runnerId = new URLSearchParams(window.location.search).get('id')
+			// $('h2').textContent = runnerId
+
+			const template = $('template')
+			const table = $('tbody')
+
+			let notifications = true
+
+			$('th.status').addEventListener('click', ev => {
+				notifications = !notifications
+				window.__TAURI__.notification.sendNotification({
+					title: 'GitLab Jobs',
+					body: `Notifications are now ${notifications ? 'enabled' : 'disabled'}`
+				})
+			})
+
+			async function updateJobs() {
+				try {
+					let jobs
+					if (runnerId) {
+						jobs = await listJobsForRunner(runnerId)
+					} else {
+						const runners = await listRunners()
+						const promises = runners.map(runner => listJobsForRunner(runner.id.toString()).then(jobs => jobs.map(job => ({ ...job, runner }))))
+						jobs = (await Promise.all(promises)).flat()
+					}
+
+					jobs.forEach(job => {
+						const existing = $('#job' + job.id)
+						if (existing != null) {
+							const status = $(existing, '.status')
+							if (job.status !== status.textContent) {
+								status.textContent = job.status
+								existing.className = ''
+								existing.classList.add(job.status)
+								if (['success', 'failed'].includes(job.status)) {
+									window.__TAURI__.notification.sendNotification({
+										title: 'GitLab Jobs',
+										body: `Job ${job.name} for ${job.project.name}: ${job.status}`
+									})
+								}
+							}
+							return
+						}
+
+						const fragment = initTemplate(template, {
+							pipeline: {
+								link: job.pipeline.web_url,
+								text: '#' + job.pipeline.id.toString()
+							},
+							status: job.status,
+							name: {
+								link: job.web_url,
+								text: job.name
+							},
+							created_at: job.created_at.substr(0, 19).replace('T', ' '),
+							project: {
+								link: 'https://gitlab.com/' + job.project.path_with_namespace,
+								text: job.project.name
+							},
+							runner: job.runner.description
+						})
+
+						const row = $(fragment, 'tr')
+						row.id = 'job' + job.id
+						row.classList.add(job.status)
+
+						$(row, '.retry').addEventListener('click', ev => {
+							try {
+								retryJob(job.project.id.toString(), job.id)
+							} catch (err) {
+								console.error(err)
+								alert(err)
+							}
+						})
+
+						const before = Array.from(table.children).find(child => {
+							return parseInt(child.id.substr(3)) < job.id
+						})
+
+						if (before) {
+							table.insertBefore(row, before)
+						} else {
+							table.appendChild(row)
+						}
+					})
+				} catch (err) {
+					console.error(err)
+					alert(err)
+				}
+			}
+
+			updateJobs()
+
+			setInterval(updateJobs, 5000)
+		</script>
+	</body>
+</html>

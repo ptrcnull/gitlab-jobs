@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css">
+		<style>
+			#error-text {
+				color: red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>hi! pls give gitlab token</h1>
+		<input id="gitlab-token" placeholder="put token here">
+		<button id="login-button">Submit</button>
+		<span id="error-text"></span>
+
+		<script src="common.js"></script>
+		<script>
+			isLoggedIn().then(loggedIn => {
+				if (loggedIn) document.location.href = 'runners.html'
+			})
+
+			const errorText = $('#error-text')
+			$('#login-button').addEventListener('click', ev => {
+				errorText.textContent = ''
+
+				logIn($('#gitlab-token').value)
+					.then(() => {
+						document.location.href = 'runners.html'
+					})
+					.catch(err => {
+						errorText.textContent = err.toString()
+					})
+			})
+		</script>
+	</body>
+</html>

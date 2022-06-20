@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css">
+		<style>
+			table tbody tr:hover {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>Pick a runner</h1>
+		<table>
+			<thead>
+				<tr class="heading">
+					<th>ID</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<a href="runner.html">Show all runners</a>
+
+		<template>
+			<tr>
+				<td class="id"></td>
+				<td class="desc"></td>
+			</tr>
+		</template>
+
+		<script src="common.js"></script>
+		<script>
+			const template = $('template')
+			const table = $('tbody')
+
+			listRunners()
+				.then(runners => {
+					runners.forEach(runner => {
+						const fragment = initTemplate(template, {
+							id: runner.id,
+							desc: runner.description
+						})
+						fragment.querySelector('tr').addEventListener('click', ev => {
+							console.log('cock')
+							document.location.href = 'runner.html?id=' + runner.id
+						})
+						table.appendChild(fragment)
+					})
+				})
+				.catch(err => alert(err))
+		</script>
+	</body>
+</html>
