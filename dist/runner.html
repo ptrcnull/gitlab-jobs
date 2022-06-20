@@ -41,24 +41,26 @@
 			<tbody></tbody>
 		</table>
 
-		<template>
-			<tr>
-				<td class="pipeline"><a target="_blank"></a></td>
-				<td class="name"><a target="_blank"></a></td>
-				<td class="created_at"></td>
-				<td class="status"></td>
-				<td class="project"><a target="_blank"></a></td>
-				<td class="runner"></td>
-				<td class="retry">retry</td>
-			</tr>
-		</template>
+		<div class="template">
+			<table>
+				<tr>
+					<td class="pipeline"><a target="_blank"></a></td>
+					<td class="name"><a target="_blank"></a></td>
+					<td class="created_at"></td>
+					<td class="status"></td>
+					<td class="project"><a target="_blank"></a></td>
+					<td class="runner"></td>
+					<td class="retry">retry</td>
+				</tr>
+			</table>
+		</div>
 
 		<script src="common.js"></script>
 		<script>
 			const runnerId = new URLSearchParams(window.location.search).get('id')
 			// $('h2').textContent = runnerId
 
-			const template = $('template')
+			const template = $('.template')
 			const table = $('tbody')
 
 			let notifications = true

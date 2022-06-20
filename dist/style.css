@@ -15,6 +15,11 @@ body {
 	justify-content: center;
 }
 
+/* workaround for https://github.com/tauri-apps/tauri/issues/4410 */
+div.template {
+	display: none;
+}
+
 table {
 	border: 1px solid #f0f0f0;
 }

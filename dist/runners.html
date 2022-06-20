@@ -22,16 +22,18 @@
 		</table>
 		<a href="runner.html">Show all runners</a>
 
-		<template>
-			<tr>
-				<td class="id"></td>
-				<td class="desc"></td>
-			</tr>
-		</template>
+		<div class="template">
+			<table>
+				<tr>
+					<td class="id"></td>
+					<td class="desc"></td>
+				</tr>
+			</table>
+		</div>
 
 		<script src="common.js"></script>
 		<script>
-			const template = $('template')
+			const template = $('.template')
 			const table = $('tbody')
 
 			listRunners()
@@ -41,11 +43,11 @@
 							id: runner.id,
 							desc: runner.description
 						})
-						fragment.querySelector('tr').addEventListener('click', ev => {
-							console.log('cock')
+						const row = $(fragment, 'tr')
+						row.addEventListener('click', ev => {
 							document.location.href = 'runner.html?id=' + runner.id
 						})
-						table.appendChild(fragment)
+						table.appendChild(row)
 					})
 				})
 				.catch(err => {

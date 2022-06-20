@@ -14,7 +14,7 @@ const $ = (...args) => {
 const $$ = document.querySelectorAll.bind(document)
 
 function initTemplate(template, data) {
-    const fragment = template.content.cloneNode(true)
+    const fragment = template.cloneNode(true)
     Object.keys(data).forEach(key => {
         const field = fragment.querySelector('.' + key)
         const value = data[key]
