@@ -6,6 +6,7 @@
 			table {
 				height: 100vh;
 				width: 100vw;
+				display: block;
 			}
 			td.status {
 				font-weight: bold;
@@ -63,11 +64,11 @@
 			const template = $('.template')
 			const table = $('tbody')
 
-			let notifications = true
+			let notifications = false
 
 			$('th.status').addEventListener('click', ev => {
 				notifications = !notifications
-				window.__TAURI__.notification.sendNotification({
+				sendNotification({
 					title: 'GitLab Jobs',
 					body: `Notifications are now ${notifications ? 'enabled' : 'disabled'}`
 				})
@@ -93,7 +94,7 @@
 								existing.className = ''
 								existing.classList.add(job.status)
 								if (['success', 'failed'].includes(job.status)) {
-									window.__TAURI__.notification.sendNotification({
+									sendNotification({
 										title: 'GitLab Jobs',
 										body: `Job ${job.name} for ${job.project.name}: ${job.status}`
 									})
